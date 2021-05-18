@@ -12,6 +12,7 @@ def create_app(test_config=None):
         DATABASE=os.path.join(app.instance_path, 'src.postgresql'),
     )
 
+    # activate when testing
     # if test_config is None:
     #     # load instance config, if it exists when not testing
     #     app.config.from_mapping('config.py', silent=True)
@@ -25,7 +26,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple hello page
+    # routes to the sub-pages -> every html page needs one or the navigation won't work
     @app.route('/')
     def mainpage():
         return render_template('index.html')
@@ -34,5 +35,7 @@ def create_app(test_config=None):
     def map():
         return render_template('content/map.html')
 
+    from . import auth
+    app.register_blueprint(auth.bp)
 
     return app
