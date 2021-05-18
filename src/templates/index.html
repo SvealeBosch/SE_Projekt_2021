@@ -1,23 +1,14 @@
-<!DOCTYPE HTML>
-<html lang="de">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hide & Read</title>
-</head>
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{% block title %}Hide & Read{% endblock %}</h1>
+    <p>Oh wow das ist ein Versuch!</p>
+{% endblock %}
 
-<body>
-    <header>
-        <p>Oh wow das ist ein Versuch!</p>
-    </header>
-    <nav>
+{% block content %}
+  <nav>
         <ul>
             <li><a href="{{ url_for('mainpage') }}">Home</a> </li>
             <li><a href="{{ url_for('map') }}">Zur Karte</a> </li>
         </ul>
     </nav>
-
-</body>
-
-
-</html>
+{% endblock %}
