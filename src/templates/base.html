@@ -22,6 +22,8 @@
   <header>
     {% block header %}{% endblock %}
   </header>
+
+  // flash() in views to show error messages - this will display them
   {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
   {% endfor %}
