@@ -27,7 +27,12 @@ def create_app(test_config=None):
 
     # a simple hello page
     @app.route('/')
-    def hello_world():
+    def mainpage():
         return render_template('index.html')
+
+    @app.route('/map')
+    def map():
+        return render_template('content/map.html')
+
 
     return app
