@@ -1,31 +1,18 @@
 <!DOCTYPE html>
-//{% block title %} will change the title displayed in the browser’s tab and window title.
-//{% block header %} is similar to title but will change the title displayed on the page.
-//{% block content %} is where the content of each page goes, such as the login form or a blog post.
 
-<title>{% block title}{% endblock} Hide & Read </title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<nav>
-  <h1>Flaskr</h1>
+<html>
+  <head>
+    <title>Hide & Read</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
 
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user['username'] }}</span>
-      <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-    {% else %}
-      <li><a href="{{ url_for('auth.register') }}">Register</a>
-      <li><a href="{{ url_for('auth.login') }}">Log In</a>
-    {% endif %}
-  </ul>
-</nav>
-<section class="content">
-  <header>
-    {% block header %}{% endblock %}
-  </header>
+  <body>
+      {% block header %}{% endblock %}
+      <nav>
+        <h1> Navigationsplatzhalter </h1>
+      </nav>
+   
+    {% block content %}{% endblock %}
 
-  // flash() in views to show error messages - this will display them
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
-</section>
+  </body>
+</html>
