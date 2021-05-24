@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- HERE JavaScript Libs & Style Sheets-->
+
+  <!-- STYLESHEETS -->
+  <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+  <link rel="stylesheet" type="text/css" href="../../static/style.css" />
+
+  <!-- JS API -->
+  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+
+  <!-- HERE JavaScript Libs & Style Sheets end-->
+  <title>Hide & Read</title>
+</head>
+
+<body>
+<!--In the div HERE Map will be rendered-->
+<h1>Hide & Read</h1>
+<p>Finde versteckte Bücher in deiner Gegend! Diese Bücher sind Geschenke, du kannst sie einfach mitnehmen.</p>
+<p>Du möchtest selbst ein Geschenkbuch verstecken? <a href="">Hier geht's lang!</a> </p>
+
+<div style="width: 100vw;height: 80vh;" id="mapContainer"></div>
+<script>
+  //Step 1: initialize communication with the platform
+  // Replace variable YOUR_API_KEY with your own apikey
+  var platform = new H.service.Platform({
+    apikey: 'HhbKhQDPxyd4BXse_54NLVZqEXzE5yOxc6wuYiXChNc'
+  });
+  var defaultLayers = platform.createDefaultLayers();
+
+  //Step 2: initialize a map - this map is centered over Europe
+  var map = new H.Map(document.getElementById('mapContainer'),
+      defaultLayers.vector.normal.map,
+      {
+        center: {lat: 53.55, lng: 10.00},
+        zoom: 12,
+        pixelRatio: window.devicePixelRatio || 1
+      }
+  );
+  // This adds a resize listener to make sure that the map occupies the whole container
+  window.addEventListener('resize', () => map.getViewPort().resize());
+  //Step 3: make the map interactive
+  // MapEvents enables the event system
+  // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+  var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+  // Create the default UI components
+  var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+  // Marker code goes here
+  const LocationOfMarker = { lat: 53.56, lng: 10.03 };
+
+  // Create a marker icon from an image URL:
+  const icon = new H.map.Icon("https://upload.wikimedia.org/wikipedia/commons/e/ed/Book_Hexagonal_Icon.svg");
+
+  // Create a marker using the previously instantiated icon:
+  const marker = new H.map.Marker(LocationOfMarker, { icon: icon });
+
+  // Add the marker to the map:
+  map.addObject(marker);
+
+  // Optionally,
+  //Show the marker in the center of the map
+  // map.setCenter(LocationOfMarker)
+
+  //Zooming so that the marker can be clearly visible
+  // map.setZoom(8)
+
+</script>
+</body>
+
+</html>
