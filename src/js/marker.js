@@ -39,14 +39,14 @@ function addInfoBubble(map) {
 
   // add Marker
   addMarkerToGroup(group, new H.geo.Point(53.56, 10.03),
-      '<div><a href="">Das Kapital</a></div>' +
-      '<div>Marx, Karl</div>');
+      '<div class="bubble"><a href="">Das Kapital</a></div>' +
+      '<div>Marx, Karl</div>' + '<div>Sprache: Deutsch</div>' + '<div>Ort: Auf Parkbank</div>');
 
   addMarkerToGroup(group, new H.geo.Point(53.60, 10.03),
-      '<div><a href="">Das Neinhorn</a></div>' +
+      '<div class="bubble"><a href="">Das Neinhorn</a></div>' +
       '<div>Kling, Marc-Uwe</div>');
 }
 
 // Add to map
 addInfoBubble(map);
-console.log("marker loaded")
+console.log("markers loaded")
