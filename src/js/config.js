@@ -8,10 +8,11 @@ const mapCenter = {
 }
 
 const mapIcons = {
-  bookIcon: '../../img/bookIcon.png'
+  bookIcon: '../../img/bookIcon.png',
+  userIcon: '../../img/userIcon.png'
 }
 
-const markerCoords = {
+const userCoords = {
   lat: 53.56,
   lng: 10.03
 }
