@@ -37,9 +37,21 @@ def create_app(test_config=None):
     def map():
         return render_template('content/map.html')
 
+    @app.route('/profil')
+    def profile():
+        return render_template('content/profil.html')
+
+    @app.route('/addBook')
+    def addBook():
+        return render_template('content/addBook.html')
+
     @app.route('/login')
     def login():
         return render_template('auth/login.html')
+
+    @app.route('/register')
+    def register():
+        return render_template('auth/register.html')
 
     from . import auth
     app.register_blueprint(auth.bp)
