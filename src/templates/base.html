@@ -33,13 +33,11 @@
             <span class="bar"></span>
         </div>
         <ul class="navbar__menu">
-            <li class="navbar__item"><a href="{{ url_for('mainpage') }}">Home</a> </li>
-            <li class="navbar__item"><a href="{{ url_for('map') }}">Map</a></li>
-            <!--<li class="navbar__item"><a href="#home"class="navbar__links" id="home-page">Home</a> </li>
-            <li class="navbar__item"><a href="#map"class="navbar__links" id="map-page">Zur Karte</a> </li>-->
+            <li class="navbar__item"><a href="{{ url_for('mainpage') }}" class="navbar__links" id="home-page">Home</a> </li>
+            <li class="navbar__item"><a href="{{ url_for('map') }}" class="navbar__links" id="map-page">Map</a></li>
             <li class="navbar__item"><a href="#add"class="navbar__links" id="add-page">Add a Book</a> </li>
             <li class="navbar__item"><a href="#profil"class="navbar__links" id="profil-page">Profil</a> </li>
-            <li class="navbar__btn"><a href="#sign-up"class="button" id="signup">Sign Up</a> </li>
+            <li class="navbar__btn"><a href="{{ url_for('login') }}"class="button" id="signup">Sign Up</a> </li>
         </ul>
     </div>
 </nav>
