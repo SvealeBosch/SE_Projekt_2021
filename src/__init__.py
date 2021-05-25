@@ -39,7 +39,7 @@ def create_app(test_config=None):
 
     @app.route('/profil')
     def profile():
-        return render_template('content/profil.html')
+        return render_template('content/profile.html')
 
     @app.route('/addBook')
     def addBook():
