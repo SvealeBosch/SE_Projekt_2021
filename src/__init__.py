@@ -37,6 +37,10 @@ def create_app(test_config=None):
     def map():
         return render_template('content/map.html')
 
+    @app.route('/login')
+    def login():
+        return render_template('auth/login.html')
+
     from . import auth
     app.register_blueprint(auth.bp)
 
