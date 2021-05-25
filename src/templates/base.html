@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Hide & Read</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+
+  <body>
+      {% block header %}{% endblock %}
+      <nav>
+        <h1> Navigationsplatzhalter </h1>
+      </nav>
+   
+    {% block content %}{% endblock %}
+
+  </body>
+</html>

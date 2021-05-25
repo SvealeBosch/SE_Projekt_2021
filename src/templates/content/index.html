@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block header %}
+<h1>Hide & Read</h1>
+<p>Oh wow das ist ein Versuch!</p>
+{% endblock %}
+
+{% block content %}
+<ul>
+    <li><a href="{{ url_for('mainpage') }}">Home</a></li>
+    <li><a href="{{ url_for('auth.login') }}">Login</a> </li>
+    <li><a href="{{ url_for('map') }}">Zur Karte</a></li>
+</ul>
+{% endblock %}
