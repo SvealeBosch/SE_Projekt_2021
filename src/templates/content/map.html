@@ -1,40 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- HERE JavaScript Libs & Style Sheets-->
-
-  <!-- STYLESHEETS -->
-  <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
-  <link rel="stylesheet" type="text/css" href="../../static/style.css" />
-
-  <!-- JS API -->
-  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
-  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
-  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
-  <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
-
-  <!-- HERE JavaScript Libs & Style Sheets end-->
-  <title>Hide & Read</title>
-</head>
-
-<body>
-
+{% block header %}
 <h1>Hide & Read</h1>
 <p>Finde versteckte Bücher in deiner Gegend! Diese Bücher sind Geschenke, du kannst sie einfach mitnehmen.</p>
+
 <p>Du möchtest selbst ein Geschenkbuch verstecken? <a href="{{ url_for('auth.login') }}">Hier geht's lang!</a> </p>
 
+{% block content %}
+<!-- see __init__.py for how the routes work and to add new ones this needs to disappear at some point, because the navigation in the base.html should do it's job but let's keep it until then so everyone working on it can see how it works -->
 <!--In the div HERE Map will be rendered-->
 <div style="width: 100vw;height: 80vh;" id="mapContainer"></div>
 
 <!-- JS SCRIPTS -->
 <!-- have to be loaded AFTER html -->
-<script type="text/javascript" src="../../js/config.js"></script>
-<script type="text/javascript" src="../../js/map.js"></script>
-<script type="text/javascript" src="../../js/marker.js"></script>
 
-</body>
-</html>
+<script type="text/javascript" src="{{ url_for('static', filename='config.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='map.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='marker.js') }}"></script>
+
+<!--In the div HERE Map will be rendered-->
+{% endblock %}
