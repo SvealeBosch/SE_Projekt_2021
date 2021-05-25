@@ -18,7 +18,6 @@ db = SQLAlchemy(app)
 
 class UserModel(db.Model):
     __tablename__ = 'users'
-
     user_id = db.Column(db.Integer, primary_key=True)  # primary_key -> autoincrement default?
     username = db.Column(db.String)
     password = db.Column(db.String)
