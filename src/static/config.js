@@ -8,8 +8,8 @@ const mapCenter = {
 }
 
 const mapIcons = {
-  bookIcon: '../../img/bookIcon.png',
-  userIcon: '../../img/userIcon.png'
+  bookIcon: "{{ url_for('static', filename='bookIcon.png') }}",
+  userIcon: "{{ url_for('static', filename='userIcon.png') }}"
 }
 
 const userCoords = {
