@@ -48,8 +48,10 @@ function addInfoBubble(map) {
   // add Book Markers
   var bookLocation1 = new H.geo.Point(53.56, 10.03);
   var bookLocation2 = new H.geo.Point(53.60, 10.03);
+  // optional: set custom icon
   var bookIcon = new H.map.Icon(mapIcons.bookIcon);
 
+  //ToDo: create HTML Templates
   addMarkerToGroup(group, bookIcon, bookLocation1,
       '<div class="bubble"><a href="">Das Kapital</a></div>' +
       '<div>Marx, Karl</div>' + '<div>Sprache: Deutsch</div>' + '<div>Ort: Auf Parkbank</div>');
