@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from src import config
-from src.models import db, getHidingplaces
+from src.models import db
 
 db = SQLAlchemy()
 
@@ -40,6 +40,11 @@ def create_app(test_config=None):
     @app.route('/login')
     def login():
         return render_template('auth/login.html')
+
+    @app.route('/register')
+        def register():
+            return render_template('auth/register.html')
+
 
     @app.route('/mediator', methods=['GET', 'POST'])
     def mediator():
