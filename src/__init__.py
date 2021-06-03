@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from src import config
-from src.models import db
+from src.models import db, getHidingplaces
 
 db = SQLAlchemy()
 
@@ -40,6 +40,18 @@ def create_app(test_config=None):
     @app.route('/login')
     def login():
         return render_template('auth/login.html')
+
+    @app.route('/mediator', methods=['GET', 'POST'])
+    def mediator():
+        # POST request
+        if request.method == 'POST':
+            print('Incoming..')
+            print(request.get_json())  # parse as JSON
+            return 'OK', 200
+
+        # GET request
+        else:
+            return getHidingplaces()
 
     from . import auth
     app.register_blueprint(auth.bp)

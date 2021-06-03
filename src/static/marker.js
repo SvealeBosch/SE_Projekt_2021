@@ -22,7 +22,6 @@ function addMarkerToGroup(group, icon, coordinate, html) {
  */
 function addInfoBubble(map) {
   var group = new H.map.Group();
-
   map.addObject(group);
 
   // add 'tap' event listener, that opens info bubble, to the group
