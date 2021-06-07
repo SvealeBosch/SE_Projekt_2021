@@ -4,4 +4,12 @@
 {% endblock %}
 
 {% block content %}
+<form method="post">
+    <label for="title">Titel</label>
+    <input name="title" id="title" required>
+    <label for="isbn">ISBN</label>
+    <input name=isbn" id="isbn" required>
+<!-- hier müssen noch mehr Formularspalten-->
+    <input type="submit" value="Buch anlegen">
+</form>
 {% endblock %}
