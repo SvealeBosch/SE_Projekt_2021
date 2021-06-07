@@ -56,7 +56,7 @@ def create_app(test_config=None):
 
         # GET request
         else:
-            return getHidingplaces()
+            return json.dumps(HidingplaceModel.to_dict)
 
     from . import auth
     app.register_blueprint(auth.bp)

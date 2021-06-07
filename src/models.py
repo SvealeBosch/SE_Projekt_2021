@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dbuser:YL6%E$xAXL%7Nf4N8&P
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Serialization method: Returns models as dictionary
+# Serialization method: Returns models as dictionary - See Source above
 class BaseModel(db.Model):
     __abstract__ = True
 
@@ -132,7 +132,7 @@ class BaseModel(db.Model):
         return ret_data
 
 
-class UserModel(db.Model):
+class UserModel(BaseModel):
     __tablename__ = 'users'
     user_id = db.Column(db.Integer, primary_key=True)  # primary_key -> autoincrement default?
     username = db.Column(db.String)
@@ -229,6 +229,5 @@ class HidingplaceModel(BaseModel):
     def __repr__(self):
         return f"statement"
 
-def getHidingplaces():
-    return json.dumps(HidingplaceModel.to_dict)
+
 
