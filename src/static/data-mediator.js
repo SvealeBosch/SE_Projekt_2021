@@ -8,11 +8,13 @@
 
 fetch('/mediator')
     .then(function (response) {
-      return response.json(); // But parse it as JSON this time
+      return response.json(); // parse it as JSON
     })
     .then(function (json) {
       console.log('GET response as JSON:');
-      console.log(json); // Here’s our JSON object
-      const obj = JSON.parse(json)
-      return obj
-    })
+      console.log(json);
+      return JSON.parse(json) // Return JSON object
+    }
+    .catch((error) => {
+      console.error(error);
+}));
