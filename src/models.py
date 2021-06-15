@@ -3,6 +3,10 @@
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/ -> relations
 
+# Sources
+# https://wakatime.com/blog/32-flask-part-1-sqlalchemy-models-to-json -> serialization method
+import json
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -10,15 +14,132 @@ from flask_sqlalchemy import SQLAlchemy
 # activate virtual environment and type 'from src.models import db'
 # db.create_all() -> creates all tables
 # db.drop_all() -> drops all tables
+from sqlalchemy.orm.attributes import QueryableAttribute
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dbuser:YL6%E$xAXL%7Nf4N8&PC@localhost:5432/seprojekt'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+# Serialization method: Returns models as dictionary - See Source above
+# class BaseModel(db.Model):
+#     __abstract__ = True
+#
+#     def to_dict(self, show=None, _hide=[], _path=None):
+#         """Return a dictionary representation of this model."""
+#
+#         show = show or []
+#
+#         hidden = self._hidden_fields if hasattr(self, "_hidden_fields") else []
+#         default = self._default_fields if hasattr(self, "_default_fields") else []
+#         default.extend(['id', 'modified_at', 'created_at'])
+#
+#         if not _path:
+#             _path = self.__tablename__.lower()
+#
+#             def prepend_path(item):
+#                 item = item.lower()
+#                 if item.split(".", 1)[0] == _path:
+#                     return item
+#                 if len(item) == 0:
+#                     return item
+#                 if item[0] != ".":
+#                     item = ".%s" % item
+#                 item = "%s%s" % (_path, item)
+#                 return item
+#
+#             _hide[:] = [prepend_path(x) for x in _hide]
+#             show[:] = [prepend_path(x) for x in show]
+#
+#         columns = self.__table__.columns.keys()
+#         relationships = self.__mapper__.relationships.keys()
+#         properties = dir(self)
+#
+#         ret_data = {}
+#
+#         for key in columns:
+#             if key.startswith("_"):
+#                 continue
+#             check = "%s.%s" % (_path, key)
+#             if check in _hide or key in hidden:
+#                 continue
+#             if check in show or key in default:
+#                 ret_data[key] = getattr(self, key)
+#
+#         for key in relationships:
+#             if key.startswith("_"):
+#                 continue
+#             check = "%s.%s" % (_path, key)
+#             if check in _hide or key in hidden:
+#                 continue
+#             if check in show or key in default:
+#                 _hide.append(check)
+#                 is_list = self.__mapper__.relationships[key].uselist
+#                 if is_list:
+#                     items = getattr(self, key)
+#                     if self.__mapper__.relationships[key].query_class is not None:
+#                         if hasattr(items, "all"):
+#                             items = items.all()
+#                     ret_data[key] = []
+#                     for item in items:
+#                         ret_data[key].append(
+#                             item.to_dict(
+#                                 show=list(show),
+#                                 _hide=list(_hide),
+#                                 _path=("%s.%s" % (_path, key.lower())),
+#                             )
+#                         )
+#                 else:
+#                     if (
+#                         self.__mapper__.relationships[key].query_class is not None
+#                         or self.__mapper__.relationships[key].instrument_class
+#                         is not None
+#                     ):
+#                         item = getattr(self, key)
+#                         if item is not None:
+#                             ret_data[key] = item.to_dict(
+#                                 show=list(show),
+#                                 _hide=list(_hide),
+#                                 _path=("%s.%s" % (_path, key.lower())),
+#                             )
+#                         else:
+#                             ret_data[key] = None
+#                     else:
+#                         ret_data[key] = getattr(self, key)
+#
+#         for key in list(set(properties) - set(columns) - set(relationships)):
+#             if key.startswith("_"):
+#                 continue
+#             if not hasattr(self.__class__, key):
+#                 continue
+#             attr = getattr(self.__class__, key)
+#             if not (isinstance(attr, property) or isinstance(attr, QueryableAttribute)):
+#                 continue
+#             check = "%s.%s" % (_path, key)
+#             if check in _hide or key in hidden:
+#                 continue
+#             if check in show or key in default:
+#                 val = getattr(self, key)
+#                 if hasattr(val, "to_dict"):
+#                     ret_data[key] = val.to_dict(
+#                         show=list(show),
+#                         _hide=list(_hide),
+#                         _path=("%s.%s" % (_path, key.lower())),
+#                     )
+#                 else:
+#                     try:
+#                         ret_data[key] = json.loads(json.dumps(val))
+#                     except:
+#                         pass
+#
+#         return ret_data
+
+
 class UserModel(db.Model):
     __tablename__ = 'users'
-    user_id = db.Column(db.Integer, primary_key=True)  # primary_key -> autoincrement default?
+
+    id = db.Column(db.Integer, primary_key=True)  # primary_key -> autoincrement default?
     username = db.Column(db.String)
     password = db.Column(db.String)
     email = db.Column(db.String)
@@ -35,13 +156,14 @@ class UserModel(db.Model):
         self.registered = registered
 
     def __repr__(self):
-        return f"statement"
+        return self.to_dict()
 
 
 class BookModel(db.Model):
     __tablename__ = 'books'
 
-    book_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     title = db.Column(db.String)
     author = db.Column(db.String)
     isbn = db.Column(db.String)
@@ -53,7 +175,9 @@ class BookModel(db.Model):
     condition = db.Column(db.String)
     date = db.Column(db.Date)
 
-    def __init__(self, title, author, isbn, genre, language, for_age, tags, publisher, condition, date):
+    def __init__(self, owner_id, title, author, isbn, genre=None, language=None, for_age=None, tags=None,
+                 publisher=None, condition=None, date=None):
+        self.owner_id = owner_id
         self.title = title
         self.author = author
         self.isbn = isbn
@@ -66,13 +190,15 @@ class BookModel(db.Model):
         self.date = date
 
     def __repr__(self):
-        return f"statement"
+        return json.dumps({'title': self.title,
+                           'author': self.author,
+                           'isbn': self.isbn})
 
 
 class LocationModel(db.Model):
     __tablename__ = 'locations'
 
-    location_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     street = db.Column(db.String)
     number = db.Column(db.Integer)
     postcode = db.Column(db.String(5))
@@ -93,20 +219,17 @@ class LocationModel(db.Model):
 class HidingplaceModel(db.Model):
     __tablename__ = 'hidingplaces'
 
-    place_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    users = db.relationship("UserModel", backref=db.backref('users', lazy=True))
-    book_id = db.Column(db.Integer, db.ForeignKey('books.book_id'))
-    books = db.relationship("BookModel", backref=db.backref('books', lazy=True))
-    location_id = db.Column(db.Integer, db.ForeignKey('locations.location_id'))
-    locations = db.relationship("LocationModel", backref=db.backref('locations', lazy=True))
+    id = db.Column(db.Integer, primary_key=True)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    hbook_id = db.Column(db.Integer, db.ForeignKey('books.id'))
+    hlocation_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     notes = db.Column(db.String)
     date = db.Column(db.Date)
 
-    def __init__(self, user_id, book_id, locations_id, notes, date):
-        self.user_id = user_id
-        self.book_id = book_id
-        self.location_id = locations_id
+    def __init__(self, owner_id, hbook_id, hlocations_id, notes, date):
+        self.owner_id = owner_id
+        self.hbook_id = hbook_id
+        self.hlocation_id = hlocations_id
         self.notes = notes
         self.date = date
 
