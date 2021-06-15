@@ -12,11 +12,219 @@
 <div style="width: 100vw;height: 80vh;" id="mapContainer"></div>
 
 <!-- JS SCRIPTS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <!-- have to be loaded AFTER html -->
 
-<script type="text/javascript" src="{{ url_for('static', filename='config.js') }}"></script>
+{% block javascript %}
+<script>
+    const hereCredentials = {
+      apikey: 'HhbKhQDPxyd4BXse_54NLVZqEXzE5yOxc6wuYiXChNc'
+    }
+
+    const mapCenter = {
+      lat: 53.55,
+      lng: 10.00
+    }
+
+    const mapIcons = {
+      bookIcon: "{{ url_for('static', filename='bookIcon.png') }}",
+      userIcon: "{{ url_for('static', filename='userIcon.png') }}"
+    }
+
+    const userCoords = {
+      lat: 53.56,
+      lng: 10.03
+    }
+</script>
+{% endblock %}
+
+<!-- <script type="text/javascript" src="{{ url_for('static', filename='config.js') }}"></script> -->
 <script type="text/javascript" src="{{ url_for('static', filename='map.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='marker.js') }}"></script>
+<!--<script type="text/javascript" src="{{ url_for('static', filename='markerService.js') }}"></script> -->
+
+{% block javascript2 %}
+<script>
+    /**
+     * Code Source: https://developer.here.com/documentation/examples/maps-js/infobubbles/open-infobubble
+     * Creates a new marker and adds it to a group
+     * @param {H.map.Group} group       The group holding the new marker
+     * @param {H.map.Icon} icon         The icon of the marker
+     * @param {H.geo.Point} coordinate  The location of the marker
+     * @param {String} html             Data associated with the marker
+     */
+    var books = "{{ books }}";
+    console.log(books);
+    map.addEventListener('tap', function (evt) {
+        console.log(evt.type, evt.currentPointer.type);
+        console.log(map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY));
+        console.log(userCoords.lat, userCoords.lng);
+    });
+
+    function addContextMenus(map) {
+        // set new context menu
+        map.addEventListener('contextmenu', function (evt) {
+            console.log(evt)
+            pos = map.screenToGeo(evt.viewportX, evt.viewportY)
+            if (evt.target != map) {
+                return;
+            }
+
+            evt.items.push(
+                new H.util.ContextItem({
+                    label: 'Setze eigene Position',
+                    callback: setPosition.bind(this, pos)
+                }),
+                H.util.ContextItem.SEPARATOR,
+                new H.util.ContextItem({
+                    label: 'Markiere Buch',
+                    callback: markBook.bind(this, pos)
+                })
+            );
+        });
+    }
+
+    function setPosition(pos) {
+        console.log('Ich will meine Posistion setzen');
+        $.ajax({
+            type: "POST",
+            url: "/content/setownpos",
+            contentType: "application/json",
+            data: JSON.stringify(pos),
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+        return;
+    }
+
+    function markBook(pos) {
+        console.log('Ich will ein Buch markieren');
+        booknr = getBooks();
+        // empty data object
+        var data = {};
+        var location = {};
+        data['user'] = "{{ user }}";
+        data['book'] = booknr;
+
+        // get geocode of actual 'pos' (Position of Pointer)
+        geocoder.reverseGeocode(
+            {
+                at:pos.lat + "," + pos.lng
+            }, result => {
+                //console.log(result.items[0].address);
+                location['street'] = result.items[0].address.street;
+                location['number'] = result.items[0].address.houseNumber;
+                location['postcode'] = result.items[0].address.postalCode;
+                location['city'] = result.items[0].address.city;
+                location['coordinates'] = result.items[0].position;
+            }, error => {
+                console.log(error);
+            }
+        );
+        // extra variable geht auch nicht
+        data['location'] = location;
+        console.log(data);
+        // stringify destroys object :/
+        console.log(JSON.stringify(data));
+        $.ajax({
+            type: "POST",
+            url: "/content/markbook",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+        return;
+    }
+
+    // show prompt with untagged books
+    function getBooks() {
+        var prmpt_str = "";
+        var book_ctr;
+        {% for book in books %}
+            prmpt_str = prmpt_str.concat("{{ loop.index }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}");
+            {% if not loop.last %}
+                prmpt_str = prmpt_str.concat("\n");
+            {% endif %}
+            book_ctr = {{ loop.index }}
+        {% endfor %}
+        console.log(prmpt_str);
+        booknr = prompt(prmpt_str);
+        if (booknr > book_ctr) {
+            alert("Wrong book number")
+        } else {
+            return booknr
+        }
+    }
+
+    function addMarkerToGroup(group, icon, coordinate, html) {
+      var marker = new H.map.Marker(coordinate, {icon: icon});
+
+      // add custom data to the marker
+      marker.setData(html);
+      group.addObject(marker);
+    }
+
+    /**
+     * Add markers
+     * Clicking on a marker opens an infobubble which holds HTML content related to the marker.
+     * @param {H.Map} map A HERE Map instance within the application
+     */
+    function addInfoBubble(map) {
+      var group = new H.map.Group();
+      map.addObject(group);
+
+      // add 'tap' event listener, that opens info bubble, to the group
+      group.addEventListener('tap', function (evt) {
+        // event target is the marker itself, group is a parent event target
+        // for all objects that it contains
+        var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+          // read custom data
+          content: evt.target.getData()
+        });
+        // show info bubble
+        ui.addBubble(bubble);
+      }, false);
+
+      // add User Marker
+      var userLocation = new H.geo.Point(userCoords.lat, userCoords.lng);
+      var userIcon = new H.map.Icon(mapIcons.userIcon);
+
+      addMarkerToGroup(group, userIcon, userLocation,
+          '<div class="bubble">Dein Standpunkt</a></div>' +
+          '<div><a href="{{ url_for('content.addBook') }}"> Buch ablegen </a> </div>');
+
+      var bookLocation1 = new H.geo.Point(53.58, 10.03);
+      // add Book Markers
+      {% for book in books %}
+        // optional: set custom icon
+        var bookIcon = new H.map.Icon(mapIcons.bookIcon);
+
+        //ToDo: create HTML Templates
+        addMarkerToGroup(group, bookIcon, bookLocation1,
+        '<div class="bubble"><a href="">{{ book['title'] }}</a></div>' +
+        '<div>{{ book['author'] }}</div>' + '<div>Sprache: {{ book['language'] }}</div>' + '<div>Ort: Auf Parkbank</div>');
+      {% endfor %}
+    }
+
+
+
+    // Add to map
+    addInfoBubble(map);
+    addContextMenus(map);
+    console.log("markers loaded");
+    console.log("{{ books }}");
+</script>
+{% endblock %}
 
 <!--In the div HERE Map will be rendered-->
 {% endblock %}

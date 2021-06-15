@@ -34,10 +34,18 @@
         </div>
         <ul class="navbar__menu">
             <li class="navbar__item"><a href="{{ url_for('mainpage') }}" class="navbar__links" id="home-page">Home</a> </li>
-            <li class="navbar__item"><a href="{{ url_for('map') }}" class="navbar__links" id="map-page">Map</a></li>
-            <li class="navbar__item"><a href="{{ url_for('addBook') }}" class="navbar__links" id="add-page">Add a Book</a> </li>
-            <li class="navbar__item"><a href="{{ url_for('profile') }}" class="navbar__links" id="profil-page">Profil</a> </li>
-            <li class="navbar__btn"><a href="{{ url_for('login') }}"class="button" id="signup">Sign Up</a> </li>
+            <li class="navbar__item"><a href="{{ url_for('content.map') }}" class="navbar__links" id="map-page">Map</a></li>
+            {% if g.user %}
+                <li class="navbar__item"><a href="{{ url_for('content.addBook') }}" class="navbar__links" id="add-page">Add a Book</a> </li>
+            {% endif %}
+            {% if g.user %}
+                <li class="navbar__item"><a href="{{ url_for('content.profile') }}" class="navbar__links" id="profil-page">Profil</a> </li>
+            {% endif %}
+            {% if not g.user %}
+                <li class="navbar__btn"><a href="{{ url_for('auth.login') }}"class="button" id="signup">Login</a> </li>
+            {% else %}
+                <li class="navbar__btn"><a href="{{ url_for('auth.logout') }}"class="button" id="logout">Logout</a> </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
