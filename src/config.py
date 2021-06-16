@@ -1,4 +1,5 @@
 import os
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -8,6 +9,11 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = 'dev'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {'pool_recycle': 60,
+                                 'max_overflow': -1,
+                                 'pool_size': 20,
+                                 'pool_timeout': 30
+                                 }
 
 
 class ProductionConfig(Config):

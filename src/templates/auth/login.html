@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}LogIn{% endblock %}</h1>
+<h1>{% block title %}LogIn{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 
 <!-- absolutely basic login form - see auth.py for more magic that's happening-->
-  <form method="post">
+<form method="post">
     <label for="username">Name</label>
     <input name="username" id="username" required>
     <label for="password">Passwort</label>
     <input type="password" name="password" id="password" required>
     <input type="submit" value="Log In">
-  </form>
+</form>
+
+<p>Du hast noch keinen Account - dann registriere dich doch! <a href="{{ url_for('auth.register') }}"> Hier lang! </a></p>
 {% endblock %}

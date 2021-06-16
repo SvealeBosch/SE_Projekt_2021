@@ -1,10 +1,13 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request
+from flask_restless import APIManager
 from flask_sqlalchemy import SQLAlchemy
 from src import config
-from src.models import db
+from src.models import db, UserModel
+import json
 
 db = SQLAlchemy()
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -28,35 +31,51 @@ def create_app(test_config=None):
     # initialize db
     db.init_app(app)
 
+    # APIManager
+    api_man = APIManager(app, flask_sqlalchemy_db=db)
+
+    # Create endpoints for Database
+    api_man.create_api(UserModel, methods=['GET'])
+
     # routes to the sub-pages -> every html page needs one or the navigation won't work
     @app.route('/')
     def mainpage():
         return render_template('content/index.html')
 
-    @app.route('/map')
-    def map():
-        return render_template('content/map.html')
+    # @app.route('/map')
+    # def map():
+    #     return render_template('content/map.html')
 
-    @app.route('/profil')
-    def profile():
-        return render_template('content/profil.html')
+    # @app.route('/login')
+    # def login():
+    #     return render_template('auth/login.html')
+    #
+    # @app.route('/register')
+    # def register():
+    #     return render_template('auth/register.html')
+    #
+    # @app.route('/profile')
+    # def profile():
+    #     return render_template('content/profile.html')
 
-    @app.route('/addBook')
-    def addBook():
-        return render_template('content/addBook.html')
+    @app.route('/mediator', methods=['GET', 'POST'])
+    def mediator():
+        # POST request
+        if request.method == 'POST':
+            print('Incoming..')
+            print(request.get_json())  # parse as JSON
+            return 'OK', 200
 
-    @app.route('/login')
-    def login():
-        return render_template('auth/login.html')
-
-    @app.route('/register')
-    def register():
-        return render_template('auth/register.html')
+        # GET request
+        else:
+            return json.dumps()
 
     from . import auth
+
     app.register_blueprint(auth.bp)
 
     from . import content
+
     app.register_blueprint(content.bp)
     app.add_url_rule('/', endpoint='content/index')
 
