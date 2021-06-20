@@ -137,6 +137,9 @@ db = SQLAlchemy(app)
 
 
 class UserModel(db.Model):
+    """
+    model class for db table users with given columns
+    """
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)  # primary_key -> autoincrement default?
@@ -145,21 +148,32 @@ class UserModel(db.Model):
     email = db.Column(db.String)
     name = db.Column(db.String)
     city = db.Column(db.String)
+    usercoord = db.Column(db.String)
     registered = db.Column(db.DateTime)
 
-    def __init__(self, username, password, email=None, name=None, city=None, registered=None):
+    def __init__(self, username, password, email=None, name=None, city=None, usercoord=None, registered=None):
         self.username = username
         self.password = password
         self.email = email
         self.name = name
         self.city = city
+        self.usercoord = usercoord
         self.registered = registered
 
     def __repr__(self):
-        return self.to_dict()
+        return json.dumps({'username': self.username,
+                           'password': self.password,
+                           'email': self.email,
+                           'name': self.name,
+                           'city': self.city,
+                           'usercoord': self.usercoord,
+                           'registered': self.registered})
 
 
 class BookModel(db.Model):
+    """
+    model class for db table books with given columns
+    """
     __tablename__ = 'books'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -195,43 +209,29 @@ class BookModel(db.Model):
                            'isbn': self.isbn})
 
 
-class LocationModel(db.Model):
-    __tablename__ = 'locations'
-
-    id = db.Column(db.Integer, primary_key=True)
-    street = db.Column(db.String)
-    number = db.Column(db.Integer)
-    postcode = db.Column(db.String(5))
-    city = db.Column(db.String)
-    coordinates = db.Column(db.String)
-
-    def __init__(self, street, number, postcode, city, coordinates):
-        self.street = street
-        self.number = number
-        self.postcode = postcode
-        self.city = city
-        self.coordinates = coordinates
-
-    def __repr__(self):
-        return f"statement"
-
-
 class HidingplaceModel(db.Model):
+    """
+    model class for db table hidingplaces with given columns
+    """
     __tablename__ = 'hidingplaces'
 
     id = db.Column(db.Integer, primary_key=True)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     hbook_id = db.Column(db.Integer, db.ForeignKey('books.id'))
-    hlocation_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
+    coordinates = db.Column(db.String)
     notes = db.Column(db.String)
     date = db.Column(db.Date)
 
-    def __init__(self, owner_id, hbook_id, hlocations_id, notes, date):
+    def __init__(self, owner_id, hbook_id, coordinates, notes, date):
         self.owner_id = owner_id
         self.hbook_id = hbook_id
-        self.hlocation_id = hlocations_id
+        self.coordinates = coordinates
         self.notes = notes
         self.date = date
 
     def __repr__(self):
-        return f"statement"
+        return json.dumps({'owner_id': self.owner_id,
+                           'hbook_id': self.hbook_id,
+                           'coordinates': self.coordinates,
+                           'notes': self.notes,
+                           'date': self.date})

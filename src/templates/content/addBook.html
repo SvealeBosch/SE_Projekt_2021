@@ -3,6 +3,16 @@
 {% block header %}
 {% endblock %}
 
+{% block flash %}
+    {% with messages = get_flashed_messages() %}
+       {% if messages %}
+          {% for message in messages %}
+             {{ message }}
+          {% endfor %}
+       {% endif %}
+    {% endwith %}
+{% endblock %}
+
 {% block content %}
 <h1>Add a Book</h1>
 <form method="post">
@@ -59,12 +69,23 @@
 
   <input type="submit" value="Buch anlegen">
 </form>
-{% for book in books %}
-<div>{{ loop.index }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}</div>
-{% if not loop.last %}
-<hr>
-{% endif %}
+
+<hl></hl>
+<div>Your books</div>
+{% for id, book in ubooks.items() %}
+    <div>{{ loop.index }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}</div>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
 {% endfor %}
 
+<hr>
+<div>Your hidden books</div>
+{% for id, book in hubooks.items() %}
+    <div>{{ loop.index }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}</div>
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+{% endfor %}
 
 {% endblock %}
