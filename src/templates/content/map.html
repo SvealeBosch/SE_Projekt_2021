@@ -223,7 +223,11 @@
 
       // add User Marker
       {% if user %}
-        var userLocation = new H.geo.Point({{ user['usercoord'].split(',')[0] }}, {{ user['usercoord'].split(',')[1] }});
+        {% if user['usercoord']%}
+            var userLocation = new H.geo.Point({{ user['usercoord'].split(',')[0] }}, {{ user['usercoord'].split(',')[1] }});
+        {% else %}
+            var userLocation = new H.geo.Point(userCoords.lat, userCoords.lng);
+        {% endif %}
         var userIcon = new H.map.Icon(mapIcons.userIcon);
 
         addMarkerToGroup(group, userIcon, userLocation,

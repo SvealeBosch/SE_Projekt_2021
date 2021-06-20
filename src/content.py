@@ -115,6 +115,7 @@ def markbook():
         # check received data and fill database
         msg = checkhidinglocations(request.get_json())
         flash(msg)
+    return render_template('content/map.html')
 
 
 @bp.route('/setownpos', methods=['POST'])
@@ -132,6 +133,7 @@ def setownpos():
         db.session.add(userdata)
         db.session.commit()
         flash('home coordinates updated')
+    return render_template('content/map.html')
 
 
 def gethiddenbooks(qbooks, hidingplaces):
