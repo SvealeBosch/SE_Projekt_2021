@@ -14,16 +14,62 @@
 {% endblock %}
 
 {% block content %}
+<h1>Add a Book</h1>
 <form method="post">
-    <label for="title">Titel</label>
-    <input name="title" id="title" required> <br>
-    <label for="bauthor">Author</label>
-    <input name="bauthor" id="bauthor" required> <br>
+  <div>
+    <h2>Buch Infos</h2>
+      <h4>Buchdaten ueber ISBN eintagen</h4>
     <label for="isbn">ISBN</label>
     <input name="isbn" id="isbn" required> <br>
-<!-- hier müssen noch mehr Formularspalten-->
-    <input type="submit" value="Buch anlegen">
+    <p>
+    </p>
+    <h4>Manuell eintragen</h4>
+    <label for="title">Titel</label>
+    <input name="title" id="title" required><br>
+    <p></p>
+    <label for="bauthor">Author</label>
+    <input name="bauthor" id="bauthor" required> <br>
+    <p>
+    </p>
+    <label for="genre">Genre</label>
+    <input name="genre" id="genre" required> <br>
+    <p>
+    </p>
+    <label for="sprache">Sprache</label>
+    <input name="sprache" id="sprache" required> <br>
+    <p>
+    </p>
+    <label for="verlag">Verlag</label>
+    <input name="verlag" id="verlag" required> <br>
+    <p>
+    </p>
+      <h3>Weitere Buchdaten</h3>
+    <label for="tags">Tags</label>
+    <input name="tags" id="tags" required> <br>
+    <p>
+    </p>
+
+    <label for="ort">Ablageort</label>
+    <input name="ort" id="ort" required> <br>
+    <p>
+    </p>
+  </div>
+  <!-- hier müssen noch mehr Formularspalten-->
+  <div>
+    <h2>Persoenliche Daten</h2>
+    <label for="name">Name</label>
+    <input name="name" id="name" required> <br>
+    <p>
+    </p>
+    <label for="telefon">Telefonnummer</label>
+    <input name="telefon" id="telefon" required> <br>
+    <p>
+    </p>
+  </div>
+
+  <input type="submit" value="Buch anlegen">
 </form>
+
 <hl></hl>
 <div>Your books</div>
 {% for id, book in ubooks.items() %}
