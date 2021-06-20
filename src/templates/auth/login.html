@@ -15,5 +15,13 @@
     <input type="submit" value="Log In">
 </form>
 
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
 <p>Du hast noch keinen Account - dann registriere dich doch! <a href="{{ url_for('auth.register') }}"> Hier lang! </a></p>
 {% endblock %}
