@@ -8,9 +8,10 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from src.models import db, UserModel, BookModel, HidingplaceModel
 
+# registers subfolder for url prefix
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-
+# decorator for routes under url prefix auth
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     """
