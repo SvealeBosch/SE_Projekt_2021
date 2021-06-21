@@ -63,7 +63,7 @@ def register(client, username, password):
 
 def test_register(client):
     """
-    Test register function with username and password
+    TF 1 - Test register function with username and password
     :param client:
     :return:
     """
@@ -76,7 +76,7 @@ def test_register(client):
 
 def test_register_userpresent(client):
     """
-    Test register function with present user
+    TF 2 - Test register function with present user
     :param client:
     :return:
     """
@@ -88,7 +88,7 @@ def test_register_userpresent(client):
 
 def test_register_wronginput(client):
     """
-    Test register function without given user name
+    TF 3 - Test register function without given user name
     :param client:
     :return:
     """
@@ -104,7 +104,7 @@ def test_register_wronginput(client):
 
 def test_login(client):
     """
-    Test login function
+    TF 4 - Test login function
     :param client:
     :return:
     """
@@ -116,7 +116,7 @@ def test_login(client):
 
 def test_login_wronginput(client):
     """
-    Test login function with wrong input
+    TF 5 - Test login function with wrong input
     :param client:
     :return:
     """
@@ -130,7 +130,7 @@ def test_login_wronginput(client):
 
 def test_logout(client):
     """
-    Test logout
+    TF 6 - Test logout
     :param client:
     :return:
     """
