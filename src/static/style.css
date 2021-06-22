@@ -400,3 +400,35 @@ input[type=submit] {
     width: 350px;
     box-shadow: 0px 0 4px 0 var(--highlight) !important;
 }
+
+/*------------------------------------------------------*/
+/*                    PROFILE                          */
+/*----------------------------------------------------*/
+
+
+.ownprofile-header {
+    display: flex;
+    padding: 4px 0 12px 0;
+}
+
+.user-profile-badge {
+    color: #fff;
+    background-color: #BDBDBD;
+    width: 2.7em;
+    height: 2.7em;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 2.7em;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.user-profile-info-text {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 130%;
+}
+
