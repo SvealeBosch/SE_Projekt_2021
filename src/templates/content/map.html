@@ -6,6 +6,17 @@
 
 <p>Du möchtest selbst ein Geschenkbuch verstecken? <a href="{{ url_for('auth.login') }}">Hier geht's lang!</a> </p>
 {% endblock %}
+
+{% block flash %}
+    {% with messages = get_flashed_messages() %}
+       {% if messages %}
+          {% for message in messages %}
+             {{ message }}
+          {% endfor %}
+       {% endif %}
+    {% endwith %}
+{% endblock %}
+
 {% block content %}
 <!-- see __init__.py for how the routes work and to add new ones this needs to disappear at some point, because the navigation in the base.html should do it's job but let's keep it until then so everyone working on it can see how it works -->
 <!--In the div HERE Map will be rendered-->
@@ -33,7 +44,7 @@
 
     const userCoords = {
       lat: 53.56,
-      lng: 10.03
+      lng: 13.03
     }
 </script>
 {% endblock %}
@@ -52,8 +63,11 @@
      * @param {H.geo.Point} coordinate  The location of the marker
      * @param {String} html             Data associated with the marker
      */
-    var books = "{{ books }}";
-    console.log(books);
+<!--    var books = "{{ books }}";-->
+<!--    console.log(books);-->
+<!--    var ubooks = "{{ ubooks }}";-->
+<!--    console.log(ubooks);-->
+
     map.addEventListener('tap', function (evt) {
         console.log(evt.type, evt.currentPointer.type);
         console.log(map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY));
@@ -84,7 +98,7 @@
     }
 
     function setPosition(pos) {
-        console.log('Ich will meine Posistion setzen');
+        console.log('Ich will meine Position setzen');
         $.ajax({
             type: "POST",
             url: "/content/setownpos",
@@ -103,68 +117,72 @@
 
     function markBook(pos) {
         console.log('Ich will ein Buch markieren');
-        booknr = getBooks();
-        // empty data object
-        var data = {};
-        var location = {};
-        data['user'] = "{{ user }}";
-        data['book'] = booknr;
 
         // get geocode of actual 'pos' (Position of Pointer)
         geocoder.reverseGeocode(
             {
-                at:pos.lat + "," + pos.lng
-            }, result => {
-                //console.log(result.items[0].address);
-                location['street'] = result.items[0].address.street;
-                location['number'] = result.items[0].address.houseNumber;
-                location['postcode'] = result.items[0].address.postalCode;
-                location['city'] = result.items[0].address.city;
-                location['coordinates'] = result.items[0].position;
-            }, error => {
-                console.log(error);
-            }
+                at:pos.lat + "," + pos.lng,
+                limit: '1'
+            }, onMarkSuccess,
+            onMarkError
         );
-        // extra variable geht auch nicht
-        data['location'] = location;
-        console.log(data);
-        // stringify destroys object :/
-        console.log(JSON.stringify(data));
-        $.ajax({
-            type: "POST",
-            url: "/content/markbook",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            dataType: "json",
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(err) {
-                console.log(err);
-            }
-        });
         return;
     }
+
+    function onMarkSuccess(result) {
+        // which book?
+        booknr = getBooks();
+        console.log(booknr);
+        // empty data object
+        if (typeof booknr == null) {
+            alert('Wrong book number');
+        }
+        else {
+            var data = {};
+            {% if user %} data['user'] = {{ user['id'] }}; {% endif %}
+            data['book'] = booknr;
+            data['location'] = result.items[0].position;
+
+            $.ajax({
+                type: "POST",
+                url: "/content/markbook",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+    }
+
+    function onMarkError(result) {
+        console.log(result);
+    }
+
 
     // show prompt with untagged books
     function getBooks() {
         var prmpt_str = "";
         var book_ctr;
-        {% for book in books %}
-            prmpt_str = prmpt_str.concat("{{ loop.index }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}");
-            {% if not loop.last %}
-                prmpt_str = prmpt_str.concat("\n");
-            {% endif %}
-            book_ctr = {{ loop.index }}
-        {% endfor %}
+        {% if ubooks %}
+            {% for id, book in ubooks.items() %}
+                prmpt_str = prmpt_str.concat("{{ book['id'] }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}");
+                {% if not loop.last %}
+                    prmpt_str = prmpt_str.concat("\n");
+                {% endif %}
+                book_ctr = {{ loop.index }}
+            {% endfor %}
+        {% endif %}
         console.log(prmpt_str);
         booknr = prompt(prmpt_str);
-        if (booknr > book_ctr) {
-            alert("Wrong book number")
-        } else {
-            return booknr
-        }
+        return booknr;
+        // TODO: fix for book number -> hier kann man alles rein hämmern :D
     }
+
 
     function addMarkerToGroup(group, icon, coordinate, html) {
       var marker = new H.map.Marker(coordinate, {icon: icon});
@@ -195,7 +213,7 @@
         ui.addBubble(bubble);
       }, false);
 
-      // add User Marker
+      // add actual position
       var userLocation = new H.geo.Point(userCoords.lat, userCoords.lng);
       var userIcon = new H.map.Icon(mapIcons.userIcon);
 
@@ -203,14 +221,24 @@
           '<div class="bubble">Dein Standpunkt</a></div>' +
           '<div><a href="{{ url_for('content.addBook') }}"> Buch ablegen </a> </div>');
 
-      var bookLocation1 = new H.geo.Point(53.58, 10.03);
+      // add User Marker
+      {% if user %}
+        var userLocation = new H.geo.Point({{ user['usercoord'].split(',')[0] }}, {{ user['usercoord'].split(',')[1] }});
+        var userIcon = new H.map.Icon(mapIcons.userIcon);
+
+        addMarkerToGroup(group, userIcon, userLocation,
+            '<div class="bubble">Dein Zu Hause</a></div>' +
+            '<div><a href="{{ url_for('content.addBook') }}"> Buch ablegen </a> </div>');
+      {% endif %}
+
       // add Book Markers
-      {% for book in books %}
+      {% for id, book in books.items() %}
         // optional: set custom icon
         var bookIcon = new H.map.Icon(mapIcons.bookIcon);
+        var bookLocation = new H.geo.Point({{ book['coord'].split(',')[0] }}, {{ book['coord'].split(',')[1] }})
 
         //ToDo: create HTML Templates
-        addMarkerToGroup(group, bookIcon, bookLocation1,
+        addMarkerToGroup(group, bookIcon, bookLocation,
         '<div class="bubble"><a href="">{{ book['title'] }}</a></div>' +
         '<div>{{ book['author'] }}</div>' + '<div>Sprache: {{ book['language'] }}</div>' + '<div>Ort: Auf Parkbank</div>');
       {% endfor %}

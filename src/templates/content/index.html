@@ -8,11 +8,22 @@
 {% endblock %}
 
 {% block content %}
+
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
 <div class="hero" id="home">
     <div class="hero__container">
         <h1 class="hero__heading">Hide or <span>Read</span></h1>
+
         <p class="hero__description">Die Boerse für Buecher</p>
         <button class="main__btn"><a href="#">Explore</a></button>
+
     </div>
 </div>
 {% endblock %}
