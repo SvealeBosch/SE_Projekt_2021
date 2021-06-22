@@ -1,5 +1,6 @@
 /**
- * Code Source: https://developer.here.com/documentation/examples/maps-js/infobubbles/open-infobubble
+ * Documentation and Code Snippets:
+ * @link {https://developer.here.com/documentation/examples/maps-js/infobubbles/open-infobubble}
  * Creates a new marker and adds it to a group
  * @param {H.map.Group} group       The group holding the new marker
  * @param {H.map.Icon} icon         The icon of the marker
@@ -46,6 +47,11 @@ function markBook() {
 }
 
 function addMarkerToGroup(group, icon, coordinate, html) {
+  /**
+   * Manually add Markers
+   * Method for manual testing purposes, please don't remove
+   * @type {H.map.Marker}
+   */
   var marker = new H.map.Marker(coordinate, {icon: icon});
 
   // add custom data to the marker
@@ -81,24 +87,7 @@ function addInfoBubble(map) {
   addMarkerToGroup(group, userIcon, userLocation,
       '<div class="bubble">Dein Standpunkt</a></div>' +
       '<div><a href="{{ url_for(\'auth.login\') }}"> Buch ablegen </a> </div>');
-
-  // add Book Markers
-  var bookLocation1 = new H.geo.Point(53.58, 10.03);
-  var bookLocation2 = new H.geo.Point(53.60, 10.03);
-  // optional: set custom icon
-  var bookIcon = new H.map.Icon(mapIcons.bookIcon);
-
-  //ToDo: create HTML Templates
-  addMarkerToGroup(group, bookIcon, bookLocation1,
-      '<div class="bubble"><a href="">Das Kapital</a></div>' +
-      '<div>Marx, Karl</div>' + '<div>Sprache: Deutsch</div>' + '<div>Ort: Auf Parkbank</div>');
-
-  addMarkerToGroup(group, bookIcon, bookLocation2,
-      '<div class="bubble"><a href="">Das Neinhorn</a></div>' +
-      '<div>Kling, Marc-Uwe</div>');
 }
-
-
 
 // Add to map
 addInfoBubble(map);

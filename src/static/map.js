@@ -1,4 +1,7 @@
-// Script Source: https://developer.here.com/tutorials/add-a-custom-marker-to-an-interactive-web-map/#creating-a-basic-map
+/**
+ * Documentation and Code Snippets:
+ * @link {https://developer.here.com/tutorials/add-a-custom-marker-to-an-interactive-web-map/#creating-a-basic-map}
+ */
 
 // 1: Initialize communication with the platform
 const platform = new H.service.Platform({
@@ -50,7 +53,6 @@ const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
 
 // Create the default UI components
 const ui = H.ui.UI.createDefault(map, defaultLayers);
-
 
 console.log("Map setup complete");
 
