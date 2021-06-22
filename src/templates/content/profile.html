@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+<div>
+    Peter Parker<br>
+    Buecherwurm <br>
+    Aktiv seit: 27.06.2021 <br>
+</div>
+<div>
+    <h2>Meine Bibliothek</h2>
+
+</div>
+
+{% block flash %}
+    {% with messages = get_flashed_messages() %}
+       {% if messages %}
+          {% for message in messages %}
+             {{ message }}
+          {% endfor %}
+       {% endif %}
+    {% endwith %}
+{% endblock %}
+
+{% block content %}
+{% if g.user %}
+    {{ g.user['username'] }}
+{% endif %}
+{% endblock %}

@@ -1,15 +1,27 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}LogIn{% endblock %}</h1>
+<h1>{% block title %}LogIn{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-  <form method="post">
+
+<!-- absolutely basic login form - see auth.py for more magic that's happening-->
+<form method="post">
     <label for="username">Name</label>
     <input name="username" id="username" required>
     <label for="password">Passwort</label>
     <input type="password" name="password" id="password" required>
     <input type="submit" value="Log In">
-  </form>
+</form>
+
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
+<p>Du hast noch keinen Account - dann registriere dich doch! <a href="{{ url_for('auth.register') }}"> Hier lang! </a></p>
 {% endblock %}

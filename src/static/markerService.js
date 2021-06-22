@@ -7,6 +7,44 @@
  * @param {String} html             Data associated with the marker
  */
 
+map.addEventListener('tap', function (evt) {
+    console.log(evt.type, evt.currentPointer.type);
+    console.log(map.screenToGeo(evt.currentPointer.viewportX, evt.currentPointer.viewportY));
+    console.log(userCoords.lat, userCoords.lng);
+});
+
+function addContextMenus(map) {
+    // set new context menu
+    map.addEventListener('contextmenu', function (e) {
+
+        if (e.target != map) {
+            return;
+        }
+
+        e.items.push(
+            new H.util.ContextItem({
+                label: 'Setze eigene Position',
+                callback: setPosition.bind()
+            }),
+            H.util.ContextItem.SEPARATOR,
+            new H.util.ContextItem({
+                label: 'Markiere Buch',
+                callback: markBook.bind()
+            })
+        );
+    });
+}
+
+function setPosition() {
+    console.log('Ich will meine Posistion setzen');
+    return;
+}
+
+function markBook() {
+    console.log('Ich will ein Buch markieren');
+    return;
+}
+
 function addMarkerToGroup(group, icon, coordinate, html) {
   var marker = new H.map.Marker(coordinate, {icon: icon});
 
@@ -22,7 +60,6 @@ function addMarkerToGroup(group, icon, coordinate, html) {
  */
 function addInfoBubble(map) {
   var group = new H.map.Group();
-
   map.addObject(group);
 
   // add 'tap' event listener, that opens info bubble, to the group
@@ -46,10 +83,12 @@ function addInfoBubble(map) {
       '<div><a href="{{ url_for(\'auth.login\') }}"> Buch ablegen </a> </div>');
 
   // add Book Markers
-  var bookLocation1 = new H.geo.Point(53.56, 10.03);
+  var bookLocation1 = new H.geo.Point(53.58, 10.03);
   var bookLocation2 = new H.geo.Point(53.60, 10.03);
+  // optional: set custom icon
   var bookIcon = new H.map.Icon(mapIcons.bookIcon);
 
+  //ToDo: create HTML Templates
   addMarkerToGroup(group, bookIcon, bookLocation1,
       '<div class="bubble"><a href="">Das Kapital</a></div>' +
       '<div>Marx, Karl</div>' + '<div>Sprache: Deutsch</div>' + '<div>Ort: Auf Parkbank</div>');
@@ -59,6 +98,9 @@ function addInfoBubble(map) {
       '<div>Kling, Marc-Uwe</div>');
 }
 
+
+
 // Add to map
 addInfoBubble(map);
-console.log("markers loaded")
+addContextMenus(map);
+console.log("markers loaded");

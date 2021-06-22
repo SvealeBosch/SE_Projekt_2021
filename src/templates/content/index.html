@@ -1,14 +1,27 @@
 {% extends "base.html" %}
 
+<!--this obviously needs some workover BUT at least it works-->
+
 {% block header %}
 <h1>Hide & Read</h1>
 <p>Oh wow das ist ein Versuch!</p>
 {% endblock %}
 
 {% block content %}
-<ul>
-    <li><a href="{{ url_for('mainpage') }}">Home</a></li>
-    <li><a href="{{ url_for('auth.login') }}">Login</a> </li>
-    <li><a href="{{ url_for('map') }}">Zur Karte</a></li>
-</ul>
+
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
+<div class="hero" id="home">
+    <div class="hero__container">
+        <h1 class="hero__heading">Hide or <span>Read</span></h1>
+        <p class="hero__description">Unlimited Possibilities</p>
+        <button class="main__btn"><a href="{{ url_for('content.map') }}">Explore</a></button>
+    </div>
+</div>
 {% endblock %}

@@ -4,7 +4,19 @@
     <h1>{% block title %}Registriere Dich!{% endblock %}</h1>
 {% endblock %}
 
+
+
 {% block content %}
+
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+
+// absolutely basic register form - see auth.py for more magic that's happening
     <form method="post">
         <label for="username">Username</label>
         <input name="username" id="username" required>

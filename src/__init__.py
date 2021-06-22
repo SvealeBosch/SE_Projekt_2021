@@ -1,12 +1,20 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request
+from flask_restless import APIManager
 from flask_sqlalchemy import SQLAlchemy
 from src import config
-from src.models import db
+from src.models import db, UserModel
+import json
 
 db = SQLAlchemy()
 
+
 def create_app(test_config=None):
+    """
+    creates flask application and initializes database
+    :param test_config:
+    :return: app
+    """
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config.Config)
@@ -33,15 +41,12 @@ def create_app(test_config=None):
     def mainpage():
         return render_template('content/index.html')
 
-    @app.route('/map')
-    def map():
-        return render_template('content/map.html')
-
     from . import auth
+    # registers entry point auth
     app.register_blueprint(auth.bp)
 
     from . import content
+    # registers entry point auth content
     app.register_blueprint(content.bp)
-    app.add_url_rule('/', endpoint='content/index')
 
     return app
