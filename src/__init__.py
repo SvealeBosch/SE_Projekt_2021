@@ -6,6 +6,7 @@ from src import config
 from src.models import db, UserModel
 import json
 
+# needed to initialize database
 db = SQLAlchemy()
 
 
@@ -46,7 +47,7 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
 
     from . import content
-    # registers entry point auth content
+    # registers entry point content
     app.register_blueprint(content.bp)
 
     return app

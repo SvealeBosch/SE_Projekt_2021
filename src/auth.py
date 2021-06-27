@@ -8,9 +8,10 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from src.models import db, UserModel, BookModel, HidingplaceModel
 
+# registers subfolder for url prefix
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-
+# decorator for routes under url prefix auth
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     """
@@ -68,7 +69,7 @@ def login():
             session.clear()
             session['user_id'] = user.id
             flash(f'Hello {username}')
-            return redirect(url_for('content/index'))
+            return redirect(url_for('mainpage'))
 
         flash(error)
     return render_template('auth/login.html')
@@ -101,7 +102,7 @@ def logout():
     user = g.user
     session.clear()
     flash(f'{user.username} logged out, please come back later')
-    return redirect(url_for('content/index'))
+    return redirect(url_for('mainpage'))
 
 
 # wrapper for content

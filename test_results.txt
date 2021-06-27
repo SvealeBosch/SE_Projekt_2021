@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform linux -- Python 3.7.3, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- /home/jules/project/SE_Projekt_2021/env/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/jules/project/SE_Projekt_2021
+collecting ... collected 6 items
+
+test/test_main.py::test_register PASSED                                  [ 16%]
+test/test_main.py::test_register_userpresent PASSED                      [ 33%]
+test/test_main.py::test_register_wronginput PASSED                       [ 50%]
+test/test_main.py::test_login PASSED                                     [ 66%]
+test/test_main.py::test_login_wronginput PASSED                          [ 83%]
+test/test_main.py::test_logout PASSED                                    [100%]
+
+======================== 6 passed in 107.32s (0:01:47) =========================
