@@ -134,7 +134,7 @@
         booknr = getBooks();
         console.log(booknr);
         // empty data object
-        if (typeof booknr == null) {
+        if (booknr == null) {
             alert('Wrong book number');
         }
         else {
@@ -150,10 +150,13 @@
                 data: JSON.stringify(data),
                 dataType: "json",
                 success: function(response) {
-                    console.log(response);
+                    console.log("success");
+                    alert(response);
+                    location.reload();
                 },
                 error: function(err) {
-                    console.log(err);
+                    console.log("error");
+                    alert(err);
                 }
             });
         }
@@ -170,17 +173,15 @@
         var book_ctr;
         {% if ubooks %}
             {% for id, book in ubooks.items() %}
-                prmpt_str = prmpt_str.concat("{{ book['id'] }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}");
+                prmpt_str = prmpt_str.concat("{{ id }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}");
                 {% if not loop.last %}
                     prmpt_str = prmpt_str.concat("\n");
                 {% endif %}
                 book_ctr = {{ loop.index }}
             {% endfor %}
         {% endif %}
-        console.log(prmpt_str);
         booknr = prompt(prmpt_str);
         return booknr;
-        // TODO: fix for book number -> hier kann man alles rein hämmern :D
     }
 
 
@@ -223,7 +224,11 @@
 
       // add User Marker
       {% if user %}
-        var userLocation = new H.geo.Point({{ user['usercoord'].split(',')[0] }}, {{ user['usercoord'].split(',')[1] }});
+        {% if user['usercoord']%}
+            var userLocation = new H.geo.Point({{ user['usercoord'].split(',')[0] }}, {{ user['usercoord'].split(',')[1] }});
+        {% else %}
+            var userLocation = new H.geo.Point(userCoords.lat, userCoords.lng);
+        {% endif %}
         var userIcon = new H.map.Icon(mapIcons.userIcon);
 
         addMarkerToGroup(group, userIcon, userLocation,

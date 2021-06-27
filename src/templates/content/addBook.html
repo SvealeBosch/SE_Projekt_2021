@@ -40,29 +40,28 @@
     <p>
     </p>
     <label for="verlag">Verlag</label>
-    <input name="verlag" id="verlag" required> <br>
+    <input name="verlag" id="verlag"> <br>
     <p>
     </p>
       <h3>Weitere Buchdaten</h3>
     <label for="tags">Tags</label>
-    <input name="tags" id="tags" required> <br>
+    <input name="tags" id="tags"> <br>
     <p>
     </p>
 
     <label for="ort">Ablageort</label>
-    <input name="ort" id="ort" required> <br>
+    <input name="ort" id="ort"> <br>
     <p>
     </p>
   </div>
-  <!-- hier müssen noch mehr Formularspalten-->
   <div>
     <h2>Persoenliche Daten</h2>
     <label for="name">Name</label>
-    <input name="name" id="name" required> <br>
+    <input name="name" id="name"> <br>
     <p>
     </p>
     <label for="telefon">Telefonnummer</label>
-    <input name="telefon" id="telefon" required> <br>
+    <input name="telefon" id="telefon"> <br>
     <p>
     </p>
   </div>
@@ -73,7 +72,7 @@
 <hl></hl>
 <div>Your books</div>
 {% for id, book in ubooks.items() %}
-    <div>{{ loop.index }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}</div>
+    <div>{{ loop.index }} - {{ book['id'] }} - {{ book['title'] }} - {{ book['author'] }} - {{ book['isbn'] }}</div>
     {% if not loop.last %}
       <hr>
     {% endif %}
