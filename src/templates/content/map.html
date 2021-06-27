@@ -180,13 +180,8 @@
                 book_ctr = {{ loop.index }}
             {% endfor %}
         {% endif %}
-        console.log(prmpt_str);
         booknr = prompt(prmpt_str);
-        {% if booknr not in ubooks.keys() %}
-            return null;
-        {% else %}
-            return booknr;
-        {% endif %}
+        return booknr;
     }
 
 

@@ -155,11 +155,11 @@ def gethiddenbooks(qbooks, hidingplaces):
         # if book.id in hidingplace fill data and show the map
         for hidingplace in hidingplaces:
             if book.id == hidingplace.hbook_id:
-                books[book.id] = {'title': book.title,
-                                  'author': book.author,
-                                  'isbn': book.isbn,
-                                  'coord': hidingplace.coordinates
-                                  }
+                books[str(book.id)] = {'title': book.title,
+                                       'author': book.author,
+                                       'isbn': book.isbn,
+                                       'coord': hidingplace.coordinates
+                                       }
     return books
 
 
@@ -175,10 +175,10 @@ def getuserbooks(userid, hidingplaces=None):
     ubooks = dict()
     # bring it in a good shape
     for book in qubooks:
-        ubooks[book.id] = {'title': book.title,
-                           'author': book.author,
-                           'isbn': book.isbn,
-                           }
+        ubooks[str(book.id)] = {'title': book.title,
+                                'author': book.author,
+                                'isbn': book.isbn,
+                                }
     # all hidden user books
     if hidingplaces is not None:
         hubooks = gethiddenbooks(qubooks, hidingplaces)
@@ -198,14 +198,14 @@ def checkhidinglocations(data):
     """
     # get all user books
     ubooks = getuserbooks(g.user.id)
-    current_app.logger.info('%s', ubooks)
 
     # check response
     if data is not None:
         book = HidingplaceModel.query.filter_by(hbook_id=data['book']).first()
-        current_app.logger.info('%s', type(book))
 
-        if (book is None) and (data['book'] in ubooks.keys()):
+        if data['book'] not in list(ubooks.keys()):
+            return "Wrong book number"
+        elif book is None:
             new_hidingplace = HidingplaceModel(data['user'], data['book'],
                                                str(data['location']['lat']) + "," +
                                                str(data['location']['lng']),
