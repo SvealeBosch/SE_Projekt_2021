@@ -1,5 +1,7 @@
+import json
+
 from flask import (
-    Blueprint, flash, g, render_template, request, current_app
+    Blueprint, flash, g, render_template, request, current_app, redirect, url_for
 )
 
 from src.auth import login_required
@@ -51,6 +53,7 @@ def addBook():
         title = request.form['title']
         bauthor = request.form['bauthor']
         isbn = request.form['isbn']
+        userid = user.id
 
         error = None
 
@@ -59,12 +62,12 @@ def addBook():
 
         if error is None:
             # here is no check if book is present, a user can add a book more than once
-            new_book = BookModel(user.id, title, bauthor, isbn, date=date.today().isoformat())
+            new_book = BookModel(userid, title, bauthor, isbn, date=date.today().isoformat())
             db.session.add(new_book)
             db.session.commit()
             flash("New Book added")
             # update books
-            ubooks, hubooks = getuserbooks(user.id, hplaces)
+            ubooks, hubooks = getuserbooks(userid, hplaces)
             render_template('content/addBook.html', ubooks=ubooks, hubooks=hubooks)
 
         # display error message
@@ -115,7 +118,9 @@ def markbook():
         # check received data and fill database
         msg = checkhidinglocations(request.get_json())
         flash(msg)
-    return render_template('content/map.html')
+    return json.dumps(msg)
+    # return redirect(url_for('content.map'))
+    # return render_template('content/map.html', user=user)
 
 
 @bp.route('/setownpos', methods=['POST'])
@@ -133,7 +138,7 @@ def setownpos():
         db.session.add(userdata)
         db.session.commit()
         flash('home coordinates updated')
-    return render_template('content/map.html')
+    return redirect(url_for('content.map'))
 
 
 def gethiddenbooks(qbooks, hidingplaces):
@@ -158,7 +163,7 @@ def gethiddenbooks(qbooks, hidingplaces):
     return books
 
 
-def getuserbooks(userid, hidingplaces):
+def getuserbooks(userid, hidingplaces=None):
     """
     calculates a dict of all user books and hidden user books
     :param userid: id of current user
@@ -175,9 +180,12 @@ def getuserbooks(userid, hidingplaces):
                            'isbn': book.isbn,
                            }
     # all hidden user books
-    hubooks = gethiddenbooks(qubooks, hidingplaces)
-
-    return ubooks, hubooks
+    if hidingplaces is not None:
+        hubooks = gethiddenbooks(qubooks, hidingplaces)
+        return ubooks, hubooks
+    # only return user books
+    else:
+        return ubooks
 
 
 def checkhidinglocations(data):
@@ -188,12 +196,16 @@ def checkhidinglocations(data):
     :param data: request of markbook
     :return: str
     """
-    current_app.logger.info('%s', data['user'])
+    # get all user books
+    ubooks = getuserbooks(g.user.id)
+    current_app.logger.info('%s', ubooks)
 
+    # check response
     if data is not None:
-        book = HidingplaceModel.query.filter_by(hbook_id=data['book']).all()
+        book = HidingplaceModel.query.filter_by(hbook_id=data['book']).first()
+        current_app.logger.info('%s', type(book))
 
-        if book is None:
+        if (book is None) and (data['book'] in ubooks.keys()):
             new_hidingplace = HidingplaceModel(data['user'], data['book'],
                                                str(data['location']['lat']) + "," +
                                                str(data['location']['lng']),
