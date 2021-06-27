@@ -60,10 +60,8 @@ def register(client, username, password):
         password=password
     ), follow_redirects=True)
 
-
 def addbook(client, userid, title, author, isbn):
     """
-
     :param client:
     :param userid:
     :param title:
